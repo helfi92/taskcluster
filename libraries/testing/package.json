@@ -16,7 +16,7 @@
     "azure-table-node": "1.5.0",
     "debug": "^3.1.0",
     "express": "4.16.2",
-    "hawk": "^4.1.2",
+    "hawk": "^7.0.0",
     "lodash": "^4.17.10",
     "nock": "^9.4.3",
     "promise": "^8.0.1",
