@@ -4443,7 +4443,7 @@ slick@^1.12.2:
   resolved "https://registry.yarnpkg.com/slick/-/slick-1.12.2.tgz#bd048ddb74de7d1ca6915faa4a57570b3550c2d7"
   integrity sha1-vQSN23TefRymkV+qSldXCzVQwtc=
 
-slugid@^1.0.3, slugid@^1.1.0:
+slugid@^1.0.3:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/slugid/-/slugid-1.1.0.tgz#e09f00899c09f5a7058edc36dd49f046fd50a82a"
   integrity sha1-4J8AiZwJ9acFjtw23UnwRv1QqCo=
@@ -4748,7 +4748,7 @@ tar@^4:
     hawk "^6.0.2"
     lodash "^4.17.4"
     promise "^8.0.1"
-    slugid "^1.1.0"
+    slugid "^2.0.0"
     superagent "~3.8.1"
     taskcluster-lib-urls "^10.0.0"
 
