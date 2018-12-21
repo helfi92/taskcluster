@@ -20,7 +20,7 @@
   "dependencies": {
     "amqplib": "^0.5.2",
     "aws-sdk": "^2.331.0",
-    "debug": "^3.1.0",
+    "debug": "^4.0.0",
     "taskcluster-client": "file:../../libraries/client",
     "taskcluster-lib-urls": "^10.0.0"
   }
