@@ -493,16 +493,7 @@ aws-sdk-promise@0.0.2:
   dependencies:
     promise "^6.1.0"
 
-aws-sdk@2.1.22:
-  version "2.1.22"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.1.22.tgz#e09bdcc43a697188ff51f501118a073f8ef5b19a"
-  integrity sha1-4JvcxDppcYj/UfUBEYoHP471sZo=
-  dependencies:
-    sax "0.5.3"
-    xml2js "0.2.8"
-    xmlbuilder "0.4.2"
-
-aws-sdk@^2.142.0, aws-sdk@^2.147.0, aws-sdk@^2.150.0, aws-sdk@^2.151.0, aws-sdk@^2.164.0, aws-sdk@^2.30.0, aws-sdk@^2.331.0, aws-sdk@^2.369.0, aws-sdk@^2.379.0:
+aws-sdk@2.382.0, aws-sdk@^2.142.0, aws-sdk@^2.147.0, aws-sdk@^2.150.0, aws-sdk@^2.151.0, aws-sdk@^2.164.0, aws-sdk@^2.30.0, aws-sdk@^2.331.0, aws-sdk@^2.369.0, aws-sdk@^2.379.0:
   version "2.382.0"
   resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.382.0.tgz#9212bc7aced9c051973578d06ea1978a57ccbd5f"
   integrity sha512-wGjZLYo2ZxGTlj2cHy/0zOfYJKUVBQYG1vpW4Cnbgo3HTtOu906a6tqkiD8QuN0EyEkn7i+wyjSiUFOCh3T/2g==
@@ -553,13 +544,13 @@ azure-entities@^5.1.0:
     promise "^8.0.1"
     slugid "^1.0.3"
 
-azure-storage@2.9.0-preview:
-  version "2.9.0-preview"
-  resolved "https://registry.yarnpkg.com/azure-storage/-/azure-storage-2.9.0-preview.tgz#358a881a803d433bc4b96936cbbdc41ed841d672"
-  integrity sha512-4sqNJPp64hru6e/FFbgcgONB6qwHvPioHVryiCw7bgovxoKrjplyeUjbv5JK9VnO+P04XIVqy8yNqJlxf5FINw==
+azure-storage@^2.10.2:
+  version "2.10.2"
+  resolved "https://registry.yarnpkg.com/azure-storage/-/azure-storage-2.10.2.tgz#3bcabdbf10e72fd0990db81116e49023c4a675b6"
+  integrity sha512-pOyGPya9+NDpAfm5YcFfklo57HfjDbYLXxs4lomPwvRxmb0Di/A+a+RkUmEFzaQ8S13CqxK40bRRB0sjj2ZQxA==
   dependencies:
     browserify-mime "~1.2.9"
-    extend "~1.2.1"
+    extend "^3.0.2"
     json-edm-parser "0.1.2"
     md5.js "1.3.4"
     readable-stream "~2.0.0"
@@ -568,7 +559,7 @@ azure-storage@2.9.0-preview:
     uuid "^3.0.0"
     validator "~9.4.1"
     xml2js "0.2.8"
-    xmlbuilder "0.4.3"
+    xmlbuilder "^9.0.7"
 
 azure-table-node@1.5.0:
   version "1.5.0"
@@ -1790,15 +1781,10 @@ express@4.16.4:
     utils-merge "1.0.1"
     vary "~1.1.2"
 
-extend@^3.0.0, extend@~3.0.2:
+extend@^3.0.0, extend@^3.0.2, extend@~3.0.2:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/extend/-/extend-3.0.2.tgz#f8b1136b4071fbd8eb140aff858b1019ec2915fa"
   integrity sha512-fjquC59cD7CyW6urNXK0FBufkZcoiGG80wTuPujX590cB5Ttln20E2UB4S/WARVqhXffZl2LNgS+gQdPIIim/g==
-
-extend@~1.2.1:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/extend/-/extend-1.2.1.tgz#a0f5fd6cfc83a5fe49ef698d60ec8a624dd4576c"
-  integrity sha1-oPX9bPyDpf5J72mNYOyKYk3UV2w=
 
 extend@~2.0.0:
   version "2.0.2"
@@ -4321,11 +4307,6 @@ safefs@^3.1.2:
   resolved "https://registry.yarnpkg.com/safer-buffer/-/safer-buffer-2.1.2.tgz#44fa161b0187b9549dd84bb91802f9bd8385cd6a"
   integrity sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==
 
-sax@0.5.3:
-  version "0.5.3"
-  resolved "https://registry.yarnpkg.com/sax/-/sax-0.5.3.tgz#3773714a0d9157caaa7302971efa5c6dcda552d6"
-  integrity sha1-N3NxSg2RV8qqcwKXHvpcbc2lUtY=
-
 sax@0.5.x:
   version "0.5.8"
   resolved "https://registry.yarnpkg.com/sax/-/sax-0.5.8.tgz#d472db228eb331c2506b0e8c15524adb939d12c1"
@@ -4802,8 +4783,8 @@ tar@^4:
     lodash "^4.15.0"
     promise "^8.0.1"
     slugid "^2.0.0"
-    taskcluster-client "file:../../.cache/yarn/v4/npm-taskcluster-lib-api-12.8.0-d20732f2-9696-4c5e-b416-b45882570101-1546298391091/libraries/client"
-    taskcluster-lib-scopes "file:../../.cache/yarn/v4/npm-taskcluster-lib-api-12.8.0-d20732f2-9696-4c5e-b416-b45882570101-1546298391091/libraries/scopes"
+    taskcluster-client "file:../../../.cache/yarn/v4/npm-taskcluster-lib-api-12.8.0-46f87541-da9d-453a-b5bd-e82dff2e199a-1546306715774/libraries/client"
+    taskcluster-lib-scopes "file:../../../.cache/yarn/v4/npm-taskcluster-lib-api-12.8.0-46f87541-da9d-453a-b5bd-e82dff2e199a-1546306715774/libraries/scopes"
     type-is "^1.6.15"
     uuid "^3.1.0"
 
@@ -4824,7 +4805,7 @@ tar@^4:
 "taskcluster-lib-azure@file:libraries/azure":
   version "10.0.0"
   dependencies:
-    taskcluster-client "file:../../.cache/yarn/v4/npm-taskcluster-lib-azure-10.0.0-24921dc0-09d2-4e14-a2ba-d168897354b2-1546298391093/libraries/client"
+    taskcluster-client "file:../../../.cache/yarn/v4/npm-taskcluster-lib-azure-10.0.0-6d734bff-596c-445e-b6db-1ea41aecb7b0-1546306715772/libraries/client"
 
 taskcluster-lib-config@^0.9.1:
   version "0.9.1"
@@ -4849,7 +4830,7 @@ taskcluster-lib-config@^0.9.1:
     recursive-readdir-sync "^1.0.6"
     s3-upload-stream "^1.0.7"
     tar-stream "^1.5.4"
-    taskcluster-client "file:../../.cache/yarn/v4/npm-taskcluster-lib-docs-10.0.1-4ee1c8a6-6f48-42ba-b0a1-c83ba880f2ab-1546298391099/libraries/client"
+    taskcluster-client "file:../../../.cache/yarn/v4/npm-taskcluster-lib-docs-10.0.1-d8a1c200-2883-4870-b902-0f41cab2feb6-1546306715775/libraries/client"
 
 "taskcluster-lib-iterate@file:libraries/iterate":
   version "11.0.0"
@@ -4874,7 +4855,7 @@ taskcluster-lib-config@^0.9.1:
     lodash "^4.5.1"
     raven "^2.2.1"
     statsum "^0.6.0"
-    taskcluster-client "file:../../.cache/yarn/v4/npm-taskcluster-lib-monitor-11.1.1-1af199f8-1d5f-4d37-aa44-8e066ce1f570-1546298391102/libraries/client"
+    taskcluster-client "file:../../../.cache/yarn/v4/npm-taskcluster-lib-monitor-11.1.1-4455f818-61fe-4154-95ba-c2d60692b7e5-1546306715779/libraries/client"
 
 "taskcluster-lib-pulse@file:libraries/pulse":
   version "11.1.0"
@@ -4882,7 +4863,7 @@ taskcluster-lib-config@^0.9.1:
     amqplib "^0.5.2"
     aws-sdk "^2.331.0"
     debug "^3.1.0"
-    taskcluster-client "file:../../.cache/yarn/v4/npm-taskcluster-lib-pulse-11.1.0-e0c0c63c-d9e8-43fc-b0e8-08ac90507327-1546298391094/libraries/client"
+    taskcluster-client "file:../../../.cache/yarn/v4/npm-taskcluster-lib-pulse-11.1.0-e729d97e-38be-4372-a3c8-b7be4ab5fbfe-1546306715778/libraries/client"
     taskcluster-lib-urls "^12.0.0"
 
 "taskcluster-lib-scopes@file:libraries/scopes":
@@ -4899,9 +4880,9 @@ taskcluster-lib-config@^0.9.1:
     nock "^9.4.3"
     promise "^8.0.1"
     superagent "3.8.2"
-    taskcluster-client "file:../../.cache/yarn/v4/npm-taskcluster-lib-testing-12.1.2-4765a185-31c2-41be-bf1e-f9f7c44d42ce-1546298390795/libraries/client"
+    taskcluster-client "file:../../../.cache/yarn/v4/npm-taskcluster-lib-testing-12.1.2-d3c8ce87-b90b-43fe-9e55-ef6ff81ef75b-1546306715533/libraries/client"
     taskcluster-lib-urls "^12.0.0"
-    taskcluster-lib-validate "file:../../.cache/yarn/v4/npm-taskcluster-lib-testing-12.1.2-4765a185-31c2-41be-bf1e-f9f7c44d42ce-1546298390795/libraries/validate"
+    taskcluster-lib-validate "file:../../../.cache/yarn/v4/npm-taskcluster-lib-testing-12.1.2-d3c8ce87-b90b-43fe-9e55-ef6ff81ef75b-1546306715533/libraries/validate"
 
 taskcluster-lib-urls@^12.0.0:
   version "12.0.0"
@@ -5444,22 +5425,12 @@ xml2js@0.4.19, xml2js@^0.4.19:
     sax ">=0.6.0"
     xmlbuilder "~9.0.1"
 
-xmlbuilder@0.4.2:
-  version "0.4.2"
-  resolved "https://registry.yarnpkg.com/xmlbuilder/-/xmlbuilder-0.4.2.tgz#1776d65f3fdbad470a08d8604cdeb1c4e540ff83"
-  integrity sha1-F3bWXz/brUcKCNhgTN6xxOVA/4M=
-
-xmlbuilder@0.4.3:
-  version "0.4.3"
-  resolved "https://registry.yarnpkg.com/xmlbuilder/-/xmlbuilder-0.4.3.tgz#c4614ba74e0ad196e609c9272cd9e1ddb28a8a58"
-  integrity sha1-xGFLp04K0ZbmCcknLNnh3bKKilg=
-
 xmlbuilder@^10.1.1:
   version "10.1.1"
   resolved "https://registry.yarnpkg.com/xmlbuilder/-/xmlbuilder-10.1.1.tgz#8cae6688cc9b38d850b7c8d3c0a4161dcaf475b0"
   integrity sha512-OyzrcFLL/nb6fMGHbiRDuPup9ljBycsdCypwuyg5AAHvyWzGfChJpCXMG88AGTIMFhGZ9RccFN1e6lhg3hkwKg==
 
-xmlbuilder@~9.0.1:
+xmlbuilder@^9.0.7, xmlbuilder@~9.0.1:
   version "9.0.7"
   resolved "https://registry.yarnpkg.com/xmlbuilder/-/xmlbuilder-9.0.7.tgz#132ee63d2ec5565c557e20f4c22df9aca686b10d"
   integrity sha1-Ey7mPS7FVlxVfiD0wi35rKaGsQ0=

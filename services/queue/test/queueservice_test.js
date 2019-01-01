@@ -272,7 +272,12 @@ helper.secrets.mockSuite(__filename, ['azure'], function(mock, skipping) {
 
         // Parse XML
         const json = await new Promise((accept, reject) => {
+          console.log(res.text);
           xml2js.parseString(res.text, (err, json) => {
+            if (err) {
+              console.log('**********', err);
+              console.log('**********', res.text);
+            }
             err ? reject(err) : accept(json);
           });
         });
