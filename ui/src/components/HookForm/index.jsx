@@ -358,13 +358,6 @@ export default class HookForm extends Component {
       triggerSchemaValidJson
     );
   };
-  isHookValuesSaved = () => {
-    const { hook, previousHook } = this.state;
-
-    if (equals(hook, previousHook)) return true;
-
-    return false;
-  };
 
   handleHookGroupIdChange = e =>
     this.setState({
@@ -421,6 +414,7 @@ export default class HookForm extends Component {
       hook,
       validation,
     } = this.state;
+    const isHookDirty = !equals(hook, this.props.hook);
     /* eslint-disable-next-line no-underscore-dangle */
     const lastFireTypeName = !isNewHook && hook.status.lastFire.__typename;
 
@@ -680,7 +674,7 @@ export default class HookForm extends Component {
             requiresAuth
             classes={{ root: classes.successIcon }}
             variant="round"
-            disabled={!this.validHook() || this.isHookValuesSaved()}
+            disabled={!this.validHook() || actionLoading || !isHookDirty}
             onClick={this.handleCreateHook}>
             <ContentSaveIcon />
           </Button>
@@ -697,7 +691,7 @@ export default class HookForm extends Component {
               requiresAuth
               classes={{ root: classes.successIcon }}
               variant="round"
-              disabled={!this.validHook() || this.isHookValuesSaved()}
+              disabled={!this.validHook() || actionLoading || !isHookDirty}
               onClick={this.handleUpdateHook}>
               <ContentSaveIcon />
             </Button>
