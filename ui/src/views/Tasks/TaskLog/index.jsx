@@ -13,18 +13,25 @@ import Log from '../../../components/Log';
     ...theme.mixins.fab,
     ...theme.mixins.actionButton,
     bottom: theme.spacing.triple,
+    right: theme.spacing.triple,
   },
-  miniFab: {
+  goToLineButton: {
     ...theme.mixins.fab,
     ...theme.mixins.actionButton,
     bottom: theme.spacing.triple,
     right: theme.spacing.unit * 11,
   },
-  rawLogButton: {
+  followButton: {
     ...theme.mixins.fab,
     ...theme.mixins.actionButton,
     bottom: theme.spacing.triple,
     right: theme.spacing.unit * 19,
+  },
+  rawLogButton: {
+    ...theme.mixins.fab,
+    ...theme.mixins.actionButton,
+    bottom: theme.spacing.triple,
+    right: theme.spacing.unit * 27,
   },
 }))
 export default class TaskLog extends Component {
@@ -37,7 +44,8 @@ export default class TaskLog extends Component {
         <Log
           url={url}
           stream={false}
-          GoToLineButtonProps={{ className: classes.miniFab }}
+          GoToLineButtonProps={{ className: classes.goToLineButton }}
+          FollowLogButtonProps={{ className: classes.followButton }}
           RawLogButtonProps={{ className: classes.rawLogButton }}
           actions={
             <Button

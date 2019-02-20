@@ -159,10 +159,6 @@ export default class Log extends Component {
   };
 
   shouldStartFollowing() {
-    if (!this.props.stream) {
-      return false;
-    }
-
     if (typeof this.state.follow === 'boolean') {
       return this.state.follow;
     }
@@ -217,33 +213,6 @@ export default class Log extends Component {
     );
     const FollowLogButtonRest = omit(['className'], FollowLogButtonProps);
 
-    if (!stream) {
-      return (
-        <Fragment>
-          <LazyLog
-            containerStyle={containerStyle}
-            url={url}
-            selectableLines
-            highlight={highlight}
-            onHighlight={this.handleHighlight}
-            scrollToLine={scrollToLine}
-            scrollToAlignment="start"
-            lineClassName={classes.line}
-            highlightLineClassName={classes.highlight}
-            loadingComponent={Loading}
-            extraLines={5}
-            {...props}
-          />
-          {rawLogButton}
-          <GoToLineButton
-            onLineNumberChange={this.handleLineNumberChange}
-            {...GoToLineButtonProps}
-          />
-          {actions}
-        </Fragment>
-      );
-    }
-
     return (
       <ScrollFollow
         startFollowing={this.shouldStartFollowing()}
@@ -253,7 +222,7 @@ export default class Log extends Component {
               containerStyle={containerStyle}
               url={url}
               onScroll={this.handleScroll}
-              stream
+              stream={stream}
               selectableLines
               follow={follow}
               highlight={highlight}
