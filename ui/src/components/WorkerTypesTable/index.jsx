@@ -1,6 +1,5 @@
 import React, { Component, Fragment } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import Markdown from '@mozilla-frontend-infra/components/Markdown';
 import { withStyles } from '@material-ui/core/styles';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
@@ -20,6 +19,7 @@ import LinkIcon from 'mdi-react/LinkIcon';
 import StatusLabel from '../StatusLabel';
 import DateDistance from '../DateDistance';
 import TableCellListItem from '../TableCellListItem';
+import Markdown from '../Markdown';
 import ConnectionDataTable from '../ConnectionDataTable';
 import { VIEW_WORKER_TYPES_PAGE_SIZE } from '../../utils/constants';
 import sort from '../../utils/sort';

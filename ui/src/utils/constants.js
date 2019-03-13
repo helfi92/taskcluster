@@ -47,6 +47,7 @@ export const THEME = {
   SECONDARY_TEXT_LIGHT: 'rgba(0, 0, 0, 0.7)',
   SECONDARY: '#4177a5',
   DRAWER_WIDTH: 240,
+  TONAL_OFFSET: 0.2,
   DIVIDER: 'rgba(0, 0, 0, 0.12)',
 };
 
