@@ -1,4 +1,7 @@
 ![View Task](view-task.gif)
+<img src="/view-task.gif?raw=true" width="200px">
+<img src="view-task.gif?raw=true" width="200px">
+<img src="view-task.gif" width="200px">
 
 # Taskcluster UI
 
