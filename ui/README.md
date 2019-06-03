@@ -3,6 +3,11 @@
 <img src="view-task.gif?raw=true" width="200px">
 <img src="view-task.gif" width="200px">
 
+![View Task](ezgif.com-optimize.gif)
+<img src="/ezgif.com-optimize.gif?raw=true" width="200px">
+<img src="ezgif.com-optimize.gif?raw=true" width="200px">
+<img src="ezgif.com-optimize.gif" width="200px">
+
 # Taskcluster UI
 
 This repository contains a collection of useful tools for use with Taskcluster.
