@@ -1,4 +1,4 @@
-![](view-task.gif)
+![View Task](view-task.gif)
 
 # Taskcluster UI
 
