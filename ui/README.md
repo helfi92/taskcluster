@@ -1,3 +1,5 @@
+![](view-task.gif)
+
 # Taskcluster UI
 
 This repository contains a collection of useful tools for use with Taskcluster.
