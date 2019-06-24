@@ -8,6 +8,8 @@ import jsonSchemaDefaults from 'json-schema-defaults';
 import { safeDump } from 'js-yaml';
 import { withStyles } from '@material-ui/core/styles';
 import Spinner from '@mozilla-frontend-infra/components/Spinner';
+import Switch from '@material-ui/core/Switch';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 import HammerIcon from 'mdi-react/HammerIcon';
 import { fade } from '@material-ui/core/styles/colorManipulator';
 import SpeedDial from '../../../components/SpeedDial';
@@ -24,12 +26,15 @@ import {
   VALID_TASK,
   ACTIONS_JSON_KNOWN_KINDS,
   INITIAL_CURSOR,
+  TASK_STATE,
 } from '../../../utils/constants';
 import db from '../../../utils/db';
 import ErrorPanel from '../../../components/ErrorPanel';
 import taskGroupQuery from './taskGroup.graphql';
 import taskGroupSubscription from './taskGroupSubscription.graphql';
 import submitTaskAction from '../submitTaskAction';
+import notify from '../../../utils/notify';
+import logoFailed from '../../../images/logoFailed.png';
 
 const updateTaskGroupIdHistory = id => {
   if (!VALID_TASK.test(id)) {
@@ -38,6 +43,8 @@ const updateTaskGroupIdHistory = id => {
 
   db.taskGroupIdsHistory.put({ taskGroupId: id });
 };
+
+const GROUP_NOTIFY_KEY = 'group-notify';
 
 @hot(module)
 @withApollo
@@ -66,7 +73,7 @@ const updateTaskGroupIdHistory = id => {
     overflow: 'hidden',
   },
   taskNameFormSearch: {
-    marginTop: theme.spacing.triple,
+    flex: 1,
     background: theme.palette.primary.main,
     '&:hover': {
       background: fade(theme.palette.primary.main, 0.9),
@@ -83,6 +90,15 @@ const updateTaskGroupIdHistory = id => {
     '& svg': {
       fill: fade(theme.palette.text.primary, 0.5),
     },
+  },
+  toolbar: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: theme.spacing.triple,
+  },
+  notifyOnError: {
+    marginLeft: theme.spacing.triple,
   },
 }))
 export default class TaskGroup extends Component {
@@ -159,7 +175,16 @@ export default class TaskGroup extends Component {
     dialogError: null,
     taskGroupLoaded: false,
     searchTerm: null,
+    notifyOnError: false,
   };
+
+  async componentDidMount() {
+    const notifyOnError =
+      'Notification' in window &&
+      (await db.userPreferences.get(GROUP_NOTIFY_KEY));
+
+    this.setState({ notifyOnError });
+  }
 
   unsubscribe = () => {
     if (!this.listener) {
@@ -209,6 +234,24 @@ export default class TaskGroup extends Component {
         }
 
         let edges;
+
+        if (
+          this.state.notifyOnError &&
+          tasksSubscriptions.state === TASK_STATE.EXCEPTION
+        ) {
+          notify({
+            body: 'A task exception occurred',
+            icon: logoFailed,
+          });
+        } else if (
+          this.state.notifyOnError &&
+          tasksSubscriptions.state === TASK_STATE.FAILED
+        ) {
+          notify({
+            body: 'A task failure occurred',
+            icon: logoFailed,
+          });
+        }
 
         if (this.tasks.has(tasksSubscriptions.taskId)) {
           // already have this task, so just update the state
@@ -416,6 +459,25 @@ export default class TaskGroup extends Component {
     this.setState({ searchTerm });
   };
 
+  handleRequestNotify = async ({ target: { checked: notifyOnError } }) => {
+    // If we are turning off notifications, or if the
+    // notification permission is already granted,
+    // just change the notification state to the new value
+    if (this.state.notifyOnError || Notification.permission === 'granted') {
+      db.userPreferences.put(notifyOnError, GROUP_NOTIFY_KEY);
+
+      return this.setState({ notifyOnError });
+    }
+
+    // Here we know the user is requesting to be notified,
+    // but has not yet granted permission
+    const permission = await Notification.requestPermission();
+    const isPermissionGranted = permission === 'granted';
+
+    db.userPreferences.put(isPermissionGranted, GROUP_NOTIFY_KEY);
+    this.setState({ notifyOnError: isPermissionGranted });
+  };
+
   render() {
     const {
       groupActions,
@@ -427,6 +489,7 @@ export default class TaskGroup extends Component {
       dialogError,
       taskGroupLoaded,
       searchTerm,
+      notifyOnError,
     } = this.state;
     const {
       description,
@@ -471,11 +534,26 @@ export default class TaskGroup extends Component {
           />
         )}
         {!loading && taskGroup && (
-          <Search
-            formProps={{ className: classes.taskNameFormSearch }}
-            placeholder="Name contains"
-            onSubmit={this.handleSearchTaskSubmit}
-          />
+          <div className={classes.toolbar}>
+            <Search
+              formProps={{ className: classes.taskNameFormSearch }}
+              placeholder="Name contains"
+              onSubmit={this.handleSearchTaskSubmit}
+            />
+            {'Notification' in window && (
+              <FormControlLabel
+                className={classes.notifyOnError}
+                control={
+                  <Switch
+                    checked={notifyOnError}
+                    onChange={this.handleRequestNotify}
+                    color="secondary"
+                  />
+                }
+                label="Notify on Task Failures"
+              />
+            )}
+          </div>
         )}
         <br />
         {!error && loading && <Spinner loading />}
