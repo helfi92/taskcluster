@@ -10,8 +10,7 @@
 
 * Write RFC [hassan]
 
-* Database / Schema Class [hassan]
-  * store schema versions in an array, not a map
+* Database / Schema Class [hassan] 
   * define a Version class and use it for validating version files, and define an update method
     * with tests for that validation
   * validate that method names are unique
