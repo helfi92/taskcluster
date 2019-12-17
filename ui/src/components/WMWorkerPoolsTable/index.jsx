@@ -20,8 +20,7 @@ import sort from '../../utils/sort';
 import Link from '../../utils/Link';
 import Button from '../Button';
 import TableCellItem from '../TableCellItem';
-import ErrorPanel from '../ErrorPanel';
-import formatError from '../../utils/formatError';
+import DialogAction from '../DialogAction';
 import { NULL_PROVIDER } from '../../utils/constants';
 import { splitWorkerPoolId } from '../../utils/workerPool';
 
@@ -55,8 +54,15 @@ export default class WorkerManagerWorkerPoolsTable extends Component {
   state = {
     sortBy: 'workerPoolId',
     sortDirection: 'asc',
-    error: null,
     actionLoading: false,
+    dialogState: {
+      error: null,
+      open: false,
+      title: '',
+      body: '',
+      confirmText: '',
+      item: null,
+    },
   };
 
   sortWorkerPools = memoize(
@@ -112,28 +118,77 @@ export default class WorkerManagerWorkerPoolsTable extends Component {
     this.setState({ sortBy: header.id, sortDirection });
   };
 
-  handleDeleteClick = async ({ currentTarget: { name } }) => {
-    const workerPool = this.props.workerPools.find(
-      wp => wp.workerPoolId === name
-    );
+  handleDeleteClick = async () => {
+    const { item } = this.state.dialogState;
     const payload = {
-      providerId: workerPool.providerId,
-      description: workerPool.description,
-      config: workerPool.config,
-      owner: workerPool.owner,
-      emailOnError: workerPool.emailOnError,
+      providerId: item.providerId,
+      description: item.description,
+      config: item.config,
+      owner: item.owner,
+      emailOnError: item.emailOnError,
     };
+
+    this.setState({
+      dialogState: {
+        ...this.state.dialogState,
+        error: null,
+      },
+    });
 
     this.props.history.replace('/worker-manager');
 
     try {
       await this.props.deleteRequest({
-        workerPoolId: workerPool.workerPoolId,
+        workerPoolId: item.workerPoolId,
         payload,
       });
+      this.setState({
+        dialogState: {
+          error: null,
+          open: false,
+          title: '',
+          body: '',
+          confirmText: '',
+          item: null,
+        },
+      });
     } catch (error) {
-      this.setState({ error: formatError(error), actionLoading: false });
+      this.handleDialogActionError(error);
     }
+  };
+
+  handleDialogActionOpen = workerPool => {
+    this.setState({
+      dialogState: {
+        open: true,
+        title: 'Delete Worker Pool?',
+        body: `This will delete the worker pool ${workerPool.workerPoolId}.`,
+        confirmText: 'Delete Worker Pool',
+        item: workerPool,
+      },
+    });
+  };
+
+  handleDialogActionError = error => {
+    this.setState({
+      dialogState: {
+        ...this.state.dialogState,
+        error,
+      },
+    });
+  };
+
+  handleDialogActionComplete = () => {
+    this.props.history.push('/worker-manager');
+  };
+
+  handleDialogActionClose = () => {
+    this.setState({
+      dialogState: {
+        error: null,
+        open: false,
+      },
+    });
   };
 
   renderRow = workerPool => {
@@ -142,6 +197,7 @@ export default class WorkerManagerWorkerPoolsTable extends Component {
       classes,
     } = this.props;
     const { actionLoading } = this.state;
+    const { handleDialogActionOpen } = this;
     const iconSize = 16;
     const { provisionerId, workerType } = splitWorkerPoolId(
       workerPool.workerPoolId
@@ -202,7 +258,7 @@ export default class WorkerManagerWorkerPoolsTable extends Component {
               title="Delete Worker Pool ID"
               className={classes.button}
               name={`${workerPool.workerPoolId}`}
-              onClick={this.handleDeleteClick}
+              onClick={() => handleDialogActionOpen(workerPool)}
               disabled={actionLoading}>
               <DeleteIcon size={iconSize} />
             </IconButton>
@@ -218,7 +274,11 @@ export default class WorkerManagerWorkerPoolsTable extends Component {
 
   render() {
     const { workerPools, searchTerm, includeDeleted } = this.props;
-    const { sortBy, sortDirection, error } = this.state;
+    const {
+      sortBy,
+      sortDirection,
+      dialogState: { open, error, title, confirmText, body },
+    } = this.state;
     const sortedWorkerPools = this.sortWorkerPools(
       workerPools,
       sortBy,
@@ -248,16 +308,28 @@ export default class WorkerManagerWorkerPoolsTable extends Component {
 
     return (
       <Fragment>
-        {error && <ErrorPanel fixed error={error} />}
         <DataTable
           items={sortedWorkerPools}
           headers={headers}
           sortByLabel={sortBy}
           sortDirection={sortDirection}
+          size="small"
           onHeaderClick={this.handleHeaderClick}
           renderRow={this.renderRow}
-          size="small"
         />
+        {open && (
+          <DialogAction
+            open={open}
+            onSubmit={this.handleDeleteClick}
+            onComplete={this.handleDialogActionComplete}
+            onClose={this.handleDialogActionClose}
+            onError={this.handleDialogActionError}
+            error={error}
+            title={title}
+            body={<Typography>{body}</Typography>}
+            confirmText={confirmText}
+          />
+        )}
       </Fragment>
     );
   }
