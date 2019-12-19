@@ -8,6 +8,7 @@ migrationScript: |-
   end
 methods:
   get_secret:
+    description: test
     mode: read
     serviceName: secrets
     args: name text

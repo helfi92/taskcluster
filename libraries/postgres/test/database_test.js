@@ -14,6 +14,7 @@ dbSuite(path.basename(__filename), function() {
       end`,
       methods: {
         testdata: {
+          description: 'test',
           mode: 'write',
           serviceName: 'service-1',
           args: '',
@@ -23,6 +24,7 @@ dbSuite(path.basename(__filename), function() {
           end`,
         },
         addup: {
+          description: 'test',
           mode: 'read',
           serviceName: 'service-2',
           args: 'x integer',
@@ -110,6 +112,7 @@ dbSuite(path.basename(__filename), function() {
         end`,
         methods: {
           testData: {
+            description: 'test',
             mode: 'write',
             serviceName: 'service-1',
             args: '',
@@ -135,7 +138,7 @@ dbSuite(path.basename(__filename), function() {
     const db = await Database.setup({schema, readDbUrl: this.dbUrl, writeDbUrl: this.dbUrl, serviceName: 'service-2'});
 
     assert.equal(versions[0].methods.testdata.serviceName, 'service-1');
-    assert.equal(Symbol(versions[0].methods.testdata.mode).toString(), WRITE.toString());
+    assert.equal(versions[0].methods.testdata.mode, WRITE);
     await assert.rejects(db.procs.testdata, /not allowed to call/);
     await db.close();
   });
@@ -145,7 +148,7 @@ dbSuite(path.basename(__filename), function() {
     const db = await Database.setup({schema, readDbUrl: this.dbUrl, writeDbUrl: this.dbUrl, serviceName: 'service-1'});
 
     assert.equal(versions[0].methods.testdata.serviceName, 'service-1');
-    assert.equal(Symbol(versions[0].methods.testdata.mode).toString(), WRITE.toString());
+    assert.equal(versions[0].methods.testdata.mode, WRITE);
     await db.procs.testdata();
     await db.close();
   });
@@ -155,7 +158,7 @@ dbSuite(path.basename(__filename), function() {
     const db = await Database.setup({schema, readDbUrl: this.dbUrl, writeDbUrl: this.dbUrl, serviceName: 'service-1'});
 
     assert.equal(versions[0].methods.addup.serviceName, 'service-2');
-    assert.equal(Symbol(versions[0].methods.addup.mode).toString(), READ.toString());
+    assert.equal(versions[0].methods.addup.mode, READ);
     await db.procs.testdata();
     await db.close();
   });
@@ -169,6 +172,7 @@ dbSuite(path.basename(__filename), function() {
           end`,
         methods: {
           testData: {
+            description: 'test',
             mode: 'write',
             serviceName: 'service-1',
             args: '',
