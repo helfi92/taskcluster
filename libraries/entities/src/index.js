@@ -118,13 +118,15 @@ class Entity {
 
   static calculateId(properties) {
     return {
-      partitionKey: properties[this.partitionKey.key],
-      rowKey: properties[this.rowKey.key],
+      partitionKey: this.partitionKey.exact(properties),
+      rowKey: this.rowKey.exact(properties),
     }
   }
 
   static async create(properties, overwrite) {
     const { partitionKey, rowKey } = this.calculateId(properties);
+    console.log('pt: ', partitionKey);
+    console.log('rk: ', rowKey);
 
     let res;
     try {
@@ -256,7 +258,14 @@ class Entity {
       });
     }
 
-    ConfiguredEntity.properties = configureOptions.properties;
+    ConfiguredEntity.properties = {};
+    Object.keys(configureOptions.properties).forEach(key => {
+      console.log('key: ', configureOptions.properties[key](key).deserialize(configureOptions.properties));
+      console.log('keysssss: ', configureOptions.properties[key](key).deserialize(configureOptions.properties));
+      ConfiguredEntity.properties[key] = configureOptions.properties[key](key).deserialize(configureOptions.properties);
+      console.log('props: ', ConfiguredEntity.properties);
+    });
+
     ConfiguredEntity.partitionKey = configureOptions.partitionKey(configureOptions.properties);
     ConfiguredEntity.rowKey = configureOptions.rowKey(configureOptions.properties);
     // TODO: more configureOptions
