@@ -104,7 +104,7 @@ methods:
     description: test
     mode: read
     serviceName: test-entities
-    args: pk text, rk text, condition text, size integer, page integer
+    args: pk text, rk text, condition text, size integer, page integer, add_one_extra_element boolean
     returns: table (partition_key text, row_key text, value jsonb, version integer, etag uuid)
     # SECURITY-CRITICAL: this function substitutes its parameters into a SQL
     # string and executes it, bringing risk of SQL injection.  This is safe
@@ -124,6 +124,7 @@ methods:
         partition_key_var text;
         row_key_var text;
         page_offset integer;
+        additional integer := 0;
       begin
         if test_entities_scan.pk is not null or test_entities_scan.rk is not null or condition is not null then
           sql := sql || ' where ';
@@ -141,7 +142,11 @@ methods:
         sql := sql || ' order by test_entities.partition_key, test_entities.row_key';
 
         if size is not null and size > 0 then
-          sql := sql || ' limit ' || size;
+          if add_one_extra_element then
+            additional := 1;
+          end if;
+
+          sql := sql || ' limit ' || size + additional;
 
           if page is not null and page > 0 then
             page_offset := size * (page - 1);

@@ -132,7 +132,7 @@ helper.dbSuite(path.basename(__filename), function() {
       assert.equal(result.entries[0].taskId, '3');
       assert.equal(result.entries[0].expires.toJSON(), new Date('4020-01-01').toJSON());
     });
-    test('retrieve documents in pages', async function() {
+    test.only('retrieve documents in pages', async function() {
       db = await helper.withDb({ schema, serviceName });
       const TestTable = configuredTestTable.setup({ tableName: 'test_entities', db, serviceName });
 
@@ -167,12 +167,7 @@ helper.dbSuite(path.basename(__filename), function() {
       assert.equal(result.entries.length, 2);
       assert.deepEqual(result.entries[0], documents[8]);
       assert.deepEqual(result.entries[1], documents[9]);
-
-      result = await TestTable.scan(null, {
-        continuation: result.continuation,
-        limit: 4,
-      });
-      assert.equal(result.entries.length, 0);
+      assert(!result.continuation);
     });
   });
 
