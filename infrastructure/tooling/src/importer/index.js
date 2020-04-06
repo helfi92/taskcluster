@@ -15,7 +15,7 @@ const main = async ({ operation }) => {
       adminDbUrl: requireEnv('ADMIN_DB_URL'),
     },
   };
-  const db = new Database({ urlsByMode: {admin: credentials.postgres.adminDbUrl}, statementTimeout: false });
+  // const db = new Database({ urlsByMode: {admin: credentials.postgres.adminDbUrl}, statementTimeout: false });
 
   process.once('SIGUSR2', function () {
     heapdump.writeSnapshot(new Date().toJSON() + '.heapsnapshot');
@@ -23,9 +23,9 @@ const main = async ({ operation }) => {
 
   let tasks;
   if (operation === 'importer') {
-    tasks = await importer({ credentials, db });
+    tasks = await importer({ credentials });
   } else if (operation === 'verifier') {
-    tasks = await verifier({ credentials, db });
+    // tasks = await verifier({ credentials, db });
   } else {
     throw new Error('unknown operation');
   }
@@ -36,7 +36,7 @@ const main = async ({ operation }) => {
     },
   });
   const context = await taskgraph.run();
-  await db.close();
+  // await db.close();
 
   if (context['metadata']) {
     console.log(context.metadata);

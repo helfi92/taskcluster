@@ -1,5 +1,6 @@
 const buffer = require('buffered-async-iterator');
 const { Table } = require('fast-azure-storage');
+const { Database } = require('taskcluster-lib-postgres');
 const prettyMilliseconds = require('pretty-ms');
 const glob = require('glob');
 const {postgresTableName} = require('taskcluster-lib-entities');
@@ -7,8 +8,13 @@ const {REPO_ROOT, readRepoYAML} = require('../utils');
 const { readAzureTableInChunks, writeToPostgres, ALLOWED_TABLES, LARGE_TABLES } = require('./util');
 
 const importer = async options => {
-  const { credentials, db } = options;
+  const { credentials } = options;
+  let db = new Database({ urlsByMode: {admin: credentials.postgres.adminDbUrl}, statementTimeout: false });
   const tasks = [];
+  const dbTimer = setInterval(async () => {
+    await db.close();
+    db = new Database({ urlsByMode: {admin: credentials.postgres.adminDbUrl}, statementTimeout: false });
+  }, 1000 * 60 * 5);
 
   let tables = [];
   for (let path of glob.sync('services/*/azure.yml', {cwd: REPO_ROOT})) {
@@ -150,6 +156,8 @@ const importer = async options => {
     requires: tables.filter(tableName => !LARGE_TABLES.includes(tableName)).concat(largeTableNames),
     provides: ['metadata'],
     run: async (requirements, utils) => {
+      clearTimeout(dbTimer);
+      await db.close();
       const total = {
         rowsImported: 0,
         elapsedTime: 0,
