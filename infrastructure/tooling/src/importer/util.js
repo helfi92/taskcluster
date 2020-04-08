@@ -183,7 +183,7 @@ exports.writeToPostgres = async (tableName, entities, db, allowedTables = [], mo
 
       if (args && vars) {
         await client.query(
-          `insert into ${pgTable}(partition_key, row_key, value, version, etag) values ${vars}`,
+          `insert into ${pgTable}(partition_key, row_key, value, version, etag) values ${vars} on conflict do nothing`,
           args,
         );
       }
