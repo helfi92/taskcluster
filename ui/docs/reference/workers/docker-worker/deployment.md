@@ -1,8 +1,3 @@
----
-title: Deployment
-order: 80
----
-
 # Deployment
 
 Docker worker is released as part of the full Taskcluster release cycle.
