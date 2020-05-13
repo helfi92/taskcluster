@@ -68,7 +68,7 @@ function buildStateHandlers(task, monitor) {
     throw new Error(`${diff.join()} ${diff.length > 1 ? 'are' : 'is'} not part of valid features`);
   }
 
-  for (let flag of Object.keys(features)) {
+  for (let flag in features) {
     let enabled = (flag in featureFlags) ?
       featureFlags[flag] : features[flag].defaults;
 
@@ -98,7 +98,7 @@ async function buildVolumeBindings(taskVolumeBindings, volumeCache, expandedScop
   let bindings = [];
   let caches = [];
 
-  for (let volumeName of taskVolumeBindings) {
+  for (let volumeName in taskVolumeBindings) {
     let cacheInstance = await volumeCache.get(volumeName);
     let binding = cacheInstance.path + ':' + taskVolumeBindings[volumeName];
     bindings.push(binding);
@@ -110,19 +110,19 @@ async function buildVolumeBindings(taskVolumeBindings, volumeCache, expandedScop
 function runAsPrivileged(task, allowPrivilegedTasks) {
   let taskCapabilities = task.payload.capabilities || {};
   let privilegedTask = taskCapabilities.privileged || false;
-  if (!privilegedTask) {return false;}
+  if (!privilegedTask) return false;
 
   if (!scopeMatch(task.scopes, [['docker-worker:capability:privileged']])) {
     throw new Error(
       'Insufficient scopes to run task in privileged mode. Try ' +
-      'adding docker-worker:capability:privileged to the .scopes array',
+      'adding docker-worker:capability:privileged to the .scopes array'
     );
   }
 
   if (!allowPrivilegedTasks) {
     throw new Error(
       'Cannot run task using docker privileged mode.  Worker ' +
-      'must be enabled to allow running of privileged tasks.',
+      'must be enabled to allow running of privileged tasks.'
     );
   }
 
@@ -138,15 +138,15 @@ async function buildDeviceBindings(devices, expandedScopes) {
   }
 
   let deviceBindings = [];
-  for (let deviceType of Object.keys(devices)) {
+  for (let deviceType in devices) {
     let device = devices[deviceType];
     device.mountPoints.forEach((mountPoint) => {
       deviceBindings.push(
         {
           PathInContainer: mountPoint,
           PathOnHost: mountPoint,
-          CgroupPermissions: 'rwm',
-        },
+          CgroupPermissions: 'rwm'
+        }
       );
     });
   }
@@ -230,7 +230,7 @@ class Reclaimer {
       // If this is not the primary claim, just stop trying to reclaim.  The task
       // will attempt to resolve it as superseded, and fail, but the primary task
       // and the other superseded tasks will still be resolved correctly.
-      if (this.claim.status.taskId !== this.primaryClaim.status.taskId) {
+      if (this.claim.status.taskId != this.primaryClaim.status.taskId) {
         this.stop();
         return;
       }
@@ -247,7 +247,7 @@ class Reclaimer {
       return;
     }
 
-    if (this.claim.status.taskId === this.primaryClaim.status.taskId) {
+    if (this.claim.status.taskId == this.primaryClaim.status.taskId) {
       this.task.queue = this.task.createQueue(this.claim.credentials);
       this.task.emit('credentials', this.claim.credentials);
     }
@@ -326,7 +326,7 @@ class Task extends EventEmitter {
     env.TASKCLUSTER_WORKER_LOCATION = this.runtime.workerLocation;
 
     let privilegedTask = runAsPrivileged(
-      this.task, this.runtime.dockerConfig.allowPrivileged,
+      this.task, this.runtime.dockerConfig.allowPrivileged
     );
 
     let procConfig = {
@@ -349,8 +349,8 @@ class Task extends EventEmitter {
           ExtraHosts: [
             'localhost.localdomain:127.0.0.1', // Bug 1488148
           ],
-        },
-      },
+        }
+      }
     };
 
     // Zero is a valid option so only check for existence.
@@ -428,12 +428,12 @@ class Task extends EventEmitter {
       `Worker Type: ${this.runtime.workerType}`,
       `Worker Version: ${version}`,
       `Public IP: ${this.runtime.publicIp}`,
-      `Hostname: ${os.hostname()}`,
+      `Hostname: ${os.hostname()}`
     ];
     //
     // List caches if used...
     if (this.task.payload.cache) {
-      for (let key of Object.keys(this.task.payload.cache)) {
+      for (let key in this.task.payload.cache) {
         let path = this.task.payload.cache[key];
         header.push(`using cache "${key}" -> ${path}`);
       }
@@ -457,14 +457,14 @@ class Task extends EventEmitter {
 
     return fmtLog(
       '%s task run with exit code: %d completed in %d seconds',
-      humanSuccess, exitCode, duration,
+      humanSuccess, exitCode, duration
     );
   }
 
   logSchemaErrors(prefix, errors) {
     return fmtErrorLog(
       '%s format is invalid json schema errors:\n %s',
-      prefix, JSON.stringify(errors, null, 2),
+      prefix, JSON.stringify(errors, null, 2)
     );
   }
 
@@ -475,7 +475,7 @@ class Task extends EventEmitter {
    *
    * @param {String} error - Option error to write to the stream prior to aborting
    */
-  async abortRun(error = '') {
+  async abortRun(error='') {
     if (!this.isCanceled()) {
       this.taskState = 'aborted';
     }
@@ -486,17 +486,17 @@ class Task extends EventEmitter {
       taskId: this.status.taskId,
       runId: this.runId,
       exception: this.taskException || '',
-      error: error.stack || error,
+      error: error.stack || error
     });
 
-    if (error) {this.stream.write(error);}
+    if (error) this.stream.write(error);
 
     // Ensure that the stream has completely finished.
     await this.stream.end(this.logFooter(
       false, // unsuccessful task
       -1, // negative exit code indicates infrastructure errors usually.
       this.taskStart, // duration details...
-      new Date(),
+      new Date()
     ));
 
     try {
@@ -507,7 +507,7 @@ class Task extends EventEmitter {
       // Do not throw, killing the states is a best effort here when aborting
       //
       this.runtime.log('error killing states', {
-        error: `Could not kill states properly. ${e.stack}`,
+        error: `Could not kill states properly. ${e.stack}`
       });
     }
 
@@ -515,7 +515,7 @@ class Task extends EventEmitter {
       let queue = this.queue;
       let reporter = this.taskException ? queue.reportException : queue.reportFailed;
       let reportDetails = [this.status.taskId, this.runId];
-      if (this.taskException) {reportDetails.push({ reason: this.taskException });}
+      if (this.taskException) reportDetails.push({ reason: this.taskException });
 
       // mark any tasks that this one superseded as resolved with
       // reason 'worker-shutdown', which means they stand to be retried
@@ -529,7 +529,7 @@ class Task extends EventEmitter {
     this.runtime.log('task resolved', {
       taskId: this.status.taskId,
       runId: this.runId,
-      taskState: this.taskState,
+      taskState: this.taskState
     });
 
     return false;
@@ -582,7 +582,7 @@ class Task extends EventEmitter {
     this.runtime.log('task resolved', {
       taskId: this.status.taskId,
       runId: this.runId,
-      taskState: taskState,
+      taskState: taskState
     });
   }
 
@@ -604,7 +604,7 @@ class Task extends EventEmitter {
     await Promise.all(this.claims.map(async (c) => {
       let taskId = c.status.taskId;
       let runId = c.runId;
-      if (taskId === primaryTaskId && runId === primaryRunId) {
+      if (taskId == primaryTaskId && runId == primaryRunId) {
         return;
       }
 
@@ -673,7 +673,7 @@ class Task extends EventEmitter {
       this.runtime.log('task max runtime timeout', {
         maxRunTime: this.task.payload.maxRunTime,
         taskId: this.status.taskId,
-        runId: this.runId,
+        runId: this.runId
       });
 
       // we don't wait for the promise to resolve just trigger kill here which
@@ -682,7 +682,7 @@ class Task extends EventEmitter {
       this.dockerProcess.kill();
       this.stream.write(fmtErrorLog(
         'Task timeout after %d seconds. Force killing container.',
-        this.task.payload.maxRunTime,
+        this.task.payload.maxRunTime
       ));
     }.bind(this), maxRuntimeMS);
     return runtimeTimeoutId;
@@ -721,7 +721,7 @@ class Task extends EventEmitter {
     }
 
     // Mark the task appropriately now that all internal state is cleaned up.
-    if (!this.isCanceled() && !this.isAborted()) {await this.completeRun(success);}
+    if (!this.isCanceled() && !this.isAborted()) await this.completeRun(success);
   }
 
   isAborted() {
@@ -742,10 +742,10 @@ class Task extends EventEmitter {
     this.stopReclaims();
     this.taskState = 'aborted';
     this.taskException = reason;
-    if (this.dockerProcess) {this.dockerProcess.kill();}
+    if (this.dockerProcess) this.dockerProcess.kill();
 
     this.stream.write(
-      fmtErrorLog(`Task has been aborted prematurely. Reason: ${reason}`),
+      fmtErrorLog(`Task has been aborted prematurely. Reason: ${reason}`)
     );
   }
 
@@ -759,17 +759,17 @@ class Task extends EventEmitter {
    * @param {String} reason - Reason for cancellation
    * @param {String} error - Optional error message to provide.
    */
-  cancel(exception, errorMessage = CANCEL_ERROR) {
+  cancel(exception, errorMessage=CANCEL_ERROR) {
     this.taskState = 'canceled';
     this.taskException = exception;
 
     this.runtime.log('cancel task', {
       taskId: this.status.taskId,
       runId: this.runId,
-      message: errorMessage,
+      message: errorMessage
     });
 
-    if (this.dockerProcess) {this.dockerProcess.kill();}
+    if (this.dockerProcess) this.dockerProcess.kill();
 
     this.stream.write(fmtErrorLog(errorMessage));
   }
@@ -787,7 +787,7 @@ class Task extends EventEmitter {
     let monitor = this.runtime.monitor;
     this.hostname = getHostname(
       this.runtime,
-      new Date(Date.now() + this.task.payload.maxRunTime * 1000),
+      new Date(Date.now() + this.task.payload.maxRunTime * 1000)
     );
 
     // Cork all writes to the stream until we are done setting up logs.
@@ -800,7 +800,7 @@ class Task extends EventEmitter {
       const retryOptions = {
         retries: 3,
         minTimeout: 2000,
-        randomize: true,
+        randomize: true
       };
 
       // Build the list of container links... and base environment variables
@@ -818,8 +818,8 @@ class Task extends EventEmitter {
       return await this.abortRun(
         fmtErrorLog(
           'Task was aborted because states could not be created ' +
-          `successfully. ${e.message}`,
-        ),
+          `successfully. ${e.message}`
+        )
       );
     }
 
@@ -839,7 +839,7 @@ class Task extends EventEmitter {
       this.taskException = 'malformed-payload';
       monitor.count('task.validationFailure');
       return await this.abortRun(
-        this.logSchemaErrors('`task.payload`', payloadErrors),
+        this.logSchemaErrors('`task.payload`', payloadErrors)
       );
     }
 
@@ -876,7 +876,7 @@ class Task extends EventEmitter {
       monitor.count('task.image.pullFailed');
       return await this.abortRun(
         fmtErrorLog('Pulling docker image has failed.') +
-        fmtErrorLog(`Error: ${e.message}`),
+        fmtErrorLog(`Error: ${e.message}`)
       );
     }
 
@@ -901,7 +901,7 @@ class Task extends EventEmitter {
       this.runtime.docker, dockerConfig);
     // Now that we know the stream is ready pipe data into it...
     dockerProc.stdout.pipe(this.stream, {
-      end: false,
+      end: false
     });
 
     let runtimeTimeoutId = this.setRuntimeTimeout(this.task.payload.maxRunTime);
@@ -918,8 +918,8 @@ class Task extends EventEmitter {
         return await this.abortRun(
           fmtErrorLog(
             'Task was aborted because states could not be started ' +
-            `successfully. ${e}`,
-          ),
+            `successfully. ${e}`
+          )
         );
       }
     });
@@ -931,7 +931,7 @@ class Task extends EventEmitter {
       this.exitCode = await dockerProc.run({
         // Do not pull the image as part of the docker run we handle it +
         // authentication above...
-        pull: false,
+        pull: false
       });
       monitor.measure('task.runtime', Date.now() - taskStart);
     } catch(error) {
@@ -944,7 +944,7 @@ class Task extends EventEmitter {
       this.runtime.log('error starting container', {
         taskId: this.status.taskId,
         runId: this.runId,
-        error: error.stack || error,
+        error: error.stack || error
       });
       this.stream.write(fmtErrorLog('Failure to properly start execution environment.'));
       this.stream.write(fmtErrorLog(error.message));
@@ -1001,7 +1001,7 @@ class Task extends EventEmitter {
       // states.  At this point the task log stream is ended, and possible the log already
       // uploaded.  This is a best effort of capturing an error.
       this.runtime.log('error killing states', {
-        error: `Could not kill states properly. ${e.stack || e}`,
+        error: `Could not kill states properly. ${e.stack || e}`
       });
     }
 
@@ -1031,5 +1031,5 @@ class Task extends EventEmitter {
 
 module.exports = {
   Reclaimer,
-  Task,
+  Task
 };

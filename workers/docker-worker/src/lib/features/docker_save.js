@@ -26,7 +26,7 @@ class DockerSave {
 
     await task.dockerProcess.container.commit({
       // repo name must be lower case and not contain underscores
-      repo: imageName,
+      repo: imageName
     });
     let image = await task.runtime.docker.getImage(`${imageName}:latest`);
     let imgStream = await image.get();
@@ -43,7 +43,7 @@ class DockerSave {
       uploadStream, 'public/dockerImage.tar', expiration, {
         'content-type': 'application/x-tar',
         'content-length': stat.size,
-        'content-encoding': 'gzip',
+        'content-encoding': 'gzip'
       });
 
     debug('docker image uploaded');
@@ -68,7 +68,7 @@ class DockerSave {
     await pipe(
       tar.pack(cache.cacheLocation, { dereference: true }),
       zlib.createGzip(),
-      output,
+      output
     );
 
     let expiration = taskcluster.fromNow(task.runtime.dockerSave.expiration);
@@ -81,7 +81,7 @@ class DockerSave {
       expiration, {
         'content-type': 'application/x-tar',
         'content-length': stat.size,
-        'content-encoding': 'gzip',
+        'content-encoding': 'gzip'
       });
 
     debug('%s uploaded', cache.cacheName);
@@ -104,7 +104,7 @@ class DockerSave {
 
     if (errors.length > 0) {
       let errorStr = 'cache could not be uploaded: ';
-      errors.forEach((err) => {
+      errors.map((err) => {
         errorStr = errorStr + err + err.stack;
       });
       debug(errorStr);

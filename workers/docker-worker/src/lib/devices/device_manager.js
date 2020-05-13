@@ -16,6 +16,7 @@ const DEVICE_MANAGERS = {
   'kvm': KvmDeviceManager,
 };
 
+
 class DeviceManager {
   constructor(config) {
     this.config = config;
@@ -25,7 +26,7 @@ class DeviceManager {
 
   initializeDeviceManagers() {
     let managers = {};
-    for (let deviceManager of Object.keys(DEVICE_MANAGERS)) {
+    for (let deviceManager in DEVICE_MANAGERS) {
       let deviceConfig = this.config.deviceManagement[deviceManager] || { enabled: false };
       if (deviceConfig.enabled) {
         managers[deviceManager] = new DEVICE_MANAGERS[deviceManager](this.config);
