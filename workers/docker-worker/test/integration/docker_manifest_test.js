@@ -18,7 +18,7 @@ suite('docker image with manifest.json file', function() {
       schedulerId: 'docker-worker-tests',
       taskGroupId: imageTaskId,
       payload: {
-        image: 'taskcluster/test-ubuntu',
+        image: 'tutum/curl',
         artifacts: {
           'public/image.tar.zst': {
             type: 'file',
@@ -26,6 +26,13 @@ suite('docker image with manifest.json file', function() {
             path: '/image.tar.zst',
           },
         },
+        command: [
+          'curl',
+          '-o',
+          '/image.tar.zst',
+          '-L',
+          'https://s3-us-west-2.amazonaws.com/docker-worker-manifest-test/image.tar.zst',
+        ],
         maxRunTime: 5 * 60,
       },
     });
@@ -34,18 +41,6 @@ suite('docker image with manifest.json file', function() {
     debug(`Creating image task ${imageTaskId}`);
     // create an artifact image with a manifest.json file
     await worker.queue.createTask(imageTaskId, taskDef);
-
-    await worker.queue.claimTask(imageTaskId, 0, {
-      workerGroup: 'random-local-worker',
-      workerId: 'docker-worker',
-    });
-
-    await worker.queue.createArtifact(imageTaskId, 0, 'public/image.tar.zst', {
-      storageType: 'reference',
-      expires: expires(),
-      contentType: mime.lookup('image.tar.zst'),
-      url: 'https://s3-us-west-2.amazonaws.com/docker-worker-manifest-test/image.tar.zst',
-    });
 
     await worker.queue.reportCompleted(imageTaskId, 0);
     const status = await waitTaskCompletion(worker.queue, imageTaskId);
