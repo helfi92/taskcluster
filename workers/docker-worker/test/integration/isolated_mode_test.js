@@ -24,7 +24,7 @@ suite('Shutdown on idle', () => {
     test('cycle through cores', async function() {
       await worker.launch();
 
-      let tasks = 5;
+      let tasks = 10;
       while (tasks--) {
         let res = await worker.postToQueue({
           payload: {
