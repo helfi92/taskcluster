@@ -120,6 +120,7 @@ github_access_tokens:
   user_id: text not null
   encrypted_access_token: jsonb not null
 sessions:
+  hashed_session_id: text not null
   encrypted_session_id: jsonb not null
   data: jsonb not null
   expires: timestamp with time zone not null
